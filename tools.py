@@ -74,9 +74,8 @@ def get_substation(id, substation_list):
             return substation
     raise ValueError(f"substation {id} not found")
 
-
-def find_number_of_substations(data):
-    substation_type_id = 1
+ 
+def find_number_of_substations(data, substation_type_id):
     list_substations_type = data["substation_types"]
     substation_type = get_substation(substation_type_id, list_substations_type)
     
@@ -91,3 +90,4 @@ def get_power_w(data):
         unit_power = max(unit_power, scenario['power_generation'])
     
     return n_turbines * unit_power
+
