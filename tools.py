@@ -34,12 +34,12 @@ class turbine():
         return self.__str__()
 
 class parser_out():
-    def __init__(self, instance_name):
+    def __init__(self, instance_name, substations, substation_substation_cables, turbines):
         self.instance_name = instance_name
         self.folder_out = "instance_arrive/"
-        self.substations = []
-        self.substation_substation_cables = []
-        self.turbines = []
+        self.substations = substations
+        self.substation_substation_cables = substation_substation_cables
+        self.turbines = turbines
     
     def create_json(self):
         dict_out = {
