@@ -9,6 +9,9 @@ class substation():
 
     def __repr__(self):
         return self.__str__()
+    
+    def to_dict(self):
+        return {'id': self.id, "land_cable_type", self.land_cable_type, "substation_type": self.substation_type}
 
 class substation_substation_cable():
     def __init__(self, substation_id, other_substation_id, cable_type):
@@ -21,6 +24,9 @@ class substation_substation_cable():
 
     def __repr__(self):
         return self.__str__()
+    
+    def to_dict(self):
+        return {id: self.substation_id, "other_substation_id": self.other_substation_id, "cable_type": self.cable_type}
 
 class turbine():
     def __init__(self, id, substation_id):
