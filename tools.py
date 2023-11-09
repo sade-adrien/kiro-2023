@@ -54,11 +54,11 @@ class parser_out():
 
 def distance(substation1, substation2):
     #distance squared
-    return (substation2['x'] - substation2['x'])**2 + (substation2['y'] - substation2['y'])**2
+    return (substation2['x'] - substation1['x'])**2 + (substation2['y'] - substation1['y'])**2
 
 def get_substation(id, substation_list):
-for substation in substation_list:
-    if substation['id'] == id:
-        return substation
-raise ValueError(f"substation {id} not found")
+    for substation in substation_list:
+        if substation['id'] == id:
+            return substation
+    raise ValueError(f"substation {id} not found")
 
