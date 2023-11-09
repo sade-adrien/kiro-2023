@@ -14,7 +14,23 @@ def substation_substation_cables_sol(data):
     return []
 
 def substations_sol(data):
-    return [substation(1, 1, 1).to_dict()]
+    n_clusters = find_number_of_substations(data)
+    barycentres = turbines_cluster(data, 3)[0]
+    possible_sub_sites = pd.DataFrame().from_dict(data["substation_locations"])[["x", "y"]].to_numpy()
+    list_substations = []
+    for barycentre_number in range(len(barycentres)):
+        dict_distances_sites_to_barycentre = {}
+        for site_number in range(len(possible_sub_sites)):
+            dict_distances_sites_to_barycentre[site_number + 1] = np.linalg.norm(barycentres[barycentre_number] - possible_sub_sites[site_number])
+        
+
+        # get the key from the min value
+        key_min = min(dict_distances_sites_to_barycentre.keys(), key=(lambda k: dict_distances_sites_to_barycentre[k]))
+        list_substations.append(substation(
+            id= key_min,
+            land_cable_type = 1,
+            substation_type = 1).to_dict())
+    return list_substations
 
 def turbines_cluster(data, n_clusters):
     idxy = pd.DataFrame().from_dict(data['wind_turbines'])

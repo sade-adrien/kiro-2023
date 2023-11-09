@@ -74,6 +74,9 @@ def get_substation(id, substation_list):
             return substation
     raise ValueError(f"substation {id} not found")
 
+def select_substation_type(data):
+    
+
 def find_number_of_substations(data):
     substation_type_id = 1
     list_substations_type = data["substation_types"]
