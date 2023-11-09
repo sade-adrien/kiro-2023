@@ -32,6 +32,9 @@ class turbine():
 
     def __repr__(self):
         return self.__str__()
+    
+    def to_dict(self):
+        return {'id': self.id, 'substation_id': self.substation_id}
 
 class parser_out():
     def __init__(self, instance_name, substations, substation_substation_cables, turbines):
