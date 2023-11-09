@@ -1,3 +1,5 @@
+import json
+
 class substation():
     def __init__(self, id, land_cable_type, substation_type):
         self.id = id
@@ -11,7 +13,7 @@ class substation():
         return self.__str__()
     
     def to_dict(self):
-        return {'id': self.id, "land_cable_type", self.land_cable_type, "substation_type": self.substation_type}
+        return {'id': self.id, "land_cable_type": self.land_cable_type, "substation_type": self.substation_type}
 
 class substation_substation_cable():
     def __init__(self, substation_id, other_substation_id, cable_type):
