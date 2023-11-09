@@ -13,6 +13,7 @@ for instance_name in list_instances:
         data = json.load(f)
     
     turbines_clus = turbines_cluster(data, 3)
+    print(turbines_clus)
 
     substations = substations_sol(data, turbines_clus)
     turbines = turbines_sol(data, substations, turbines_clus[1])
