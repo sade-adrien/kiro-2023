@@ -90,4 +90,3 @@ def get_power_w(data):
         unit_power = max(unit_power, scenario['power_generation'])
     
     return n_turbines * unit_power
-
