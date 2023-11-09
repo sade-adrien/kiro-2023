@@ -32,3 +32,21 @@ class turbine():
 
     def __repr__(self):
         return self.__str__()
+
+class parser_out():
+    def __init__(self, instance_name):
+        self.instance_name = instance_name
+        self.folder_out = "instance_arrive/"
+        self.substations = []
+        self.substation_substation_cables = []
+        self.turbines = []
+    
+    def create_json(self):
+        dict_out = {
+            "substation": self.substations,
+            "substation_substation_cables": self.substation_substation_cables,
+            "turbines": self.turbines
+            }
+
+        with open(f"{self.folder_out}/{self.instance_name}_out.json", "w+") as f:
+            json.dump(dict_out, f)
