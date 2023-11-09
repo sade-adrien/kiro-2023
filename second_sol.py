@@ -3,11 +3,16 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 
-def turbines_sol(data):
+def turbines_sol(data, substation_list, turbine_cluster):
+    turbine_id, turbine_cluster =  turbine_cluster
     turbines_sol = []
-    for t in data['wind_turbines']:
-        turbines_sol.append(turbine(id=t['id'],
-                                    substation_id=1).to_dict())
+    for t in range(len(data['wind_turbines'])):
+        turbines_sol.append(
+                            turbine(id=turbine_id[t],
+                                    substation_id=substation_list[turbine_cluster[t]]
+                                    ).to_dict()
+
+                                )   
     return turbines_sol
 
 def substation_substation_cables_sol(data):
