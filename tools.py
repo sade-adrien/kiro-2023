@@ -29,7 +29,7 @@ class substation_substation_cable():
         return self.__str__()
     
     def to_dict(self):
-        return {id: self.substation_id, "other_substation_id": self.other_substation_id, "cable_type": self.cable_type}
+        return {"substation_id": self.substation_id, "other_substation_id": self.other_substation_id, "cable_type": self.cable_type}
 
 class turbine():
     def __init__(self, id, substation_id):

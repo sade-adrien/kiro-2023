@@ -17,7 +17,7 @@ for instance_name in list_instances:
     substations = substations_sol(data, turbines_clus)
     turbines = turbines_sol(data, substations, turbines_clus[1])
     
-    substation_substation_cables = substation_substation_cables_sol(data)
+    substation_substation_cables = [] # substation_substation_cables_sol(data, substations)
 
     parser_out(
         instance_name = instance_name,

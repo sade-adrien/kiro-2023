@@ -15,13 +15,28 @@ def turbines_sol(data, substation_list, turbine_cluster):
                                 )   
     return turbines_sol
 
-def substation_substation_cables_sol(data):
-    return []
+def substation_substation_cables_sol(data, substation_list, substation_cable_type = 1):
+    substation_substation_cables = []
+
+    substation_list_with_coordinates = pd.DataFrame(substation_list)[["id"]].merge(pd.DataFrame().from_dict(data["substation_locations"]), left_on="id", right_on="id")
+    while len(substation_list_with_coordinates) > 1:
+        distances = substation_list_with_coordinates.copy()
+        id_sub = distances.iloc[0]["id"]
+        distances["distance"] = distances.apply(lambda x: (x['x'] - distances.iloc[0]['x'])**2 + (x['y'] - distances.iloc[0]['y'])**2, axis=1)
+        distances = distances.sort_values(by="distance")
+
+        substation_substation_cables.append(substation_substation_cable(int(id_sub), int(distances.iloc[1]["id"]), int(substation_cable_type)).to_dict())
+        # delete first row of dataframe
+        substation_list_with_coordinates = substation_list_with_coordinates.iloc[1:]
+
+        # delete row with id equal to distances.iloc[1]["id"]
+        substation_list_with_coordinates = substation_list_with_coordinates[substation_list_with_coordinates.id != distances.iloc[1]["id"]]
+
+    return substation_substation_cables
 
 def substations_sol(data, turbine_cluster):
     barycentres, turbine_cluster =  turbine_cluster
 
-    n_clusters = find_number_of_substations(data)
     possible_sub_sites = pd.DataFrame().from_dict(data["substation_locations"])[["x", "y"]].to_numpy()
     list_substations = []
 
