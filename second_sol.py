@@ -59,10 +59,14 @@ def substations_sol(data, turbine_cluster):
         key_min = list_distances[0][0]
         selected_substation_id.append(key_min)
 
+        sub_type = get_substation_type(data)
+        land_cable_type = get_cable_land_type(data, sub_type)
+        
         list_substations.append(substation(
-            id= int(key_min),
-            land_cable_type = 1,
-            substation_type = 1).to_dict())
+            id= key_min,
+            land_cable_type = land_cable_type['id'],
+            substation_type = sub_type['id']
+            ).to_dict())
     return list_substations
 
 def turbines_cluster(data, n_clusters):
@@ -78,3 +82,41 @@ def turbines_cluster(data, n_clusters):
     labels = kmeans.labels_
     
     return (cluster_centers, (id, labels))
+
+def get_substation_type(data):
+    min_rating = 1e6
+    min_cost = 1e6
+    eligible_types = []
+    selected_type = None
+    for substation_type in data['substation_types']:
+        if min_rating > substation_type['rating']:
+            min_rating = substation_type['rating']
+            eligible_types = [substation_type]
+        elif min_rating == substation_type['rating']:
+            eligible_types.append(substation_type)
+
+    for e in eligible_types:
+        if min_cost > e['cost']:
+            min_cost = e['cost']
+            selected_type = e
+    
+    return selected_type
+
+def get_cable_land_type(data, sub_type):
+    eligible_land_cables = []
+    for cable_type in data['land_substation_cable_types']:
+        if cable_type['rating'] >= sub_type['rating']:
+            eligible_land_cables.append(cable_type)
+
+    min_cost = 1e6
+    p = []
+    for c in eligible_land_cables:
+        if min_cost >= 25*c['variable_cost'] + c['fixed_cost']:
+            p = [c]
+        elif min_cost == 25*c['variable_cost'] + c['fixed_cost']:
+            p.append(c)
+
+    minval = min(p, key=lambda x: x['probability_of_failure'])
+    p = [d for d in p if d['probability_of_failure'] == minval['probability_of_failure']]
+    selected_type = max(p, key=lambda x: x['rating'])
+    return selected_type
