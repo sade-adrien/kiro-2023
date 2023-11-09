@@ -82,7 +82,7 @@ def find_number_of_substations(data):
     
     total_power_max = get_power_w(data)
 
-    return np.ceil(total_power_max / substation_type["rating"])
+    return int(np.ceil(total_power_max / substation_type["rating"]))
 
 def get_power_w(data):
     n_turbines = len(data['wind_turbines'])
