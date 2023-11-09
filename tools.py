@@ -3,5 +3,5 @@ class Turbine():
         self.id = id
         self.substation_id = substation_id
     
-    def __str__(self):
+    def __repr__(self):
         return f"Turbine {self.id} at substation {self.substation_id}"
