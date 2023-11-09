@@ -73,3 +73,10 @@ def get_substation(id, substation_list):
             return substation
     raise ValueError(f"substation {id} not found")
 
+def get_power_w(data):
+    n_turbines = len(data['wind_turbines'])
+    unit_power = 0
+    for scenario in data['wind_scenarios']:
+        unit_power = max(unit_power, scenario['power_generation'])
+    
+    return n_turbines * unit_power
