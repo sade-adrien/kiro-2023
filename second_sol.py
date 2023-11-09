@@ -18,9 +18,10 @@ def turbines_sol(data, substation_list, turbine_cluster):
 def substation_substation_cables_sol(data):
     return []
 
-def substations_sol(data):
+def substations_sol(data, turbine_cluster):
+    barycentres, turbine_cluster =  turbine_cluster
+
     n_clusters = find_number_of_substations(data)
-    barycentres = turbines_cluster(data, 3)[0]
     possible_sub_sites = pd.DataFrame().from_dict(data["substation_locations"])[["x", "y"]].to_numpy()
     list_substations = []
     for barycentre_number in range(len(barycentres)):

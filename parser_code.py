@@ -1,19 +1,22 @@
 import json
 from tools import parser_out
-from simple_sol import substations_sol, substation_substation_cables_sol, turbines_sol
+from second_sol import substations_sol, substation_substation_cables_sol, turbines_sol, turbines_cluster
 
 def test():
     print("hi")
 
 
-list_instances = ["toy", "small", "medium", "large", "huge"]
+list_instances = ["small"] # ["toy", "small", "medium", "large", "huge"]
 for instance_name in list_instances:
     # read json file
     with open(f"instance_depart/{instance_name}.json") as f:
         data = json.load(f)
+    
+    turbines_clus = turbines_cluster(data, 3)
 
-    turbines = turbines_sol(data)
-    substations = substations_sol(data)
+    substations = substations_sol(data, turbines_clus)
+    turbines = turbines_sol(data, substations, turbines_clus[1])
+    
     substation_substation_cables = substation_substation_cables_sol(data)
 
     parser_out(
