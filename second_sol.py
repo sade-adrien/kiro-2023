@@ -28,4 +28,4 @@ def turbines_cluster(data, n_clusters):
     cluster_centers = np.concatenate((np.mean(x) * np.ones_like(kmeans.cluster_centers_), kmeans.cluster_centers_), axis=1)
     labels = kmeans.labels_
     
-    return (cluster_centers, labels)
+    return (cluster_centers, (id, labels))
