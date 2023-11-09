@@ -1,3 +1,4 @@
 from tools import *
 
-def turbine
+def build_turbines(data):
+    turbines = []
