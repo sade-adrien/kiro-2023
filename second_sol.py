@@ -18,6 +18,8 @@ def turbines_sol(data, substation_list, turbine_cluster):
 def substation_substation_cables_sol(data, substation_list):
     substation_substation_cables = []
     # sort sub_sub_cable_types_price by price
+    sub_sub_cable_types_price = pd.DataFrame().from_dict(data["substation_substation_cable_types"])
+    sub_sub_cable_types_price["price"] = sub_sub_cable_types_price["fixed_cost"] + sub_sub_cable_types_price["variable_cost"] * 10
     sub_sub_cable_types_price = sub_sub_cable_types_price.sort_values(by="price")
     sub_sub_cable_types_id = int(sub_sub_cable_types_price.iloc[0]["id"])
 
@@ -39,6 +41,8 @@ def substation_substation_cables_sol(data, substation_list):
 
 def substations_sol(data, turbine_cluster):
     barycentres, turbine_cluster =  turbine_cluster
+    sub_type = get_substation_type(data)
+    land_cable_type = get_cable_land_type(data, sub_type)
 
     possible_sub_sites = pd.DataFrame().from_dict(data["substation_locations"])[["x", "y"]].to_numpy()
     list_substations = []
@@ -58,9 +62,7 @@ def substations_sol(data, turbine_cluster):
             list_distances.pop(0)
         key_min = list_distances[0][0]
         selected_substation_id.append(key_min)
-
-        sub_type = get_substation_type(data)
-        land_cable_type = get_cable_land_type(data, sub_type)
+        
         
         list_substations.append(substation(
             id= key_min,
