@@ -42,7 +42,15 @@ def substation_substation_cables_sol(data, substation_list):
 def substations_sol(data, turbine_cluster):
     barycentres, turbine_cluster =  turbine_cluster
     sub_type = get_substation_type(data)
+    print("sub_type", sub_type)
     land_cable_type = get_cable_land_type(data, sub_type)
+    a = pd.DataFrame().from_dict(data["land_substation_cable_types"])
+    # Take minnimum rating and minimum cost
+    a = a[a["rating"] > sub_type['rating']*1.5]
+    a["metrics"] = a["rating"] * a["variable_cost"]
+    a = a.sort_values("metrics")
+    land_cable_type = int(a.iloc[0]["id"])
+    print("land_cable_type", land_cable_type)
 
     possible_sub_sites = pd.DataFrame().from_dict(data["substation_locations"])[["x", "y"]].to_numpy()
     list_substations = []
@@ -66,7 +74,7 @@ def substations_sol(data, turbine_cluster):
         
         list_substations.append(substation(
             id= key_min,
-            land_cable_type = land_cable_type['id'],
+            land_cable_type = land_cable_type,
             substation_type = sub_type['id']
             ).to_dict())
     return list_substations
@@ -107,7 +115,7 @@ def get_substation_type(data):
 def get_cable_land_type(data, sub_type):
     eligible_land_cables = []
     for cable_type in data['land_substation_cable_types']:
-        if cable_type['rating'] >= sub_type['rating']:
+        if cable_type['rating'] >= sub_type['rating']*1.1:
             eligible_land_cables.append(cable_type)
 
     min_cost = 1e6
@@ -120,5 +128,5 @@ def get_cable_land_type(data, sub_type):
 
     minval = min(p, key=lambda x: x['probability_of_failure'])
     p = [d for d in p if d['probability_of_failure'] == minval['probability_of_failure']]
-    selected_type = max(p, key=lambda x: x['rating'])
+    selected_type = min(p, key=lambda x: x['rating'])
     return selected_type

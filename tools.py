@@ -79,7 +79,7 @@ def find_number_of_substations(data, substation_type_id):
     list_substations_type = data["substation_types"]
     substation_type = get_substation(substation_type_id, list_substations_type)
     
-    total_power_max = get_power_w(data)
+    total_power_max = get_power_w(data) * 0.85
 
     return int(np.ceil(total_power_max / substation_type["rating"]))
 
