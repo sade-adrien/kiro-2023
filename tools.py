@@ -1,4 +1,5 @@
 import json
+import numpy as np
 
 class substation():
     def __init__(self, id, land_cable_type, substation_type):
@@ -54,7 +55,7 @@ class parser_out():
     
     def create_json(self):
         dict_out = {
-            "substation": self.substations,
+            "substations": self.substations,
             "substation_substation_cables": self.substation_substation_cables,
             "turbines": self.turbines
             }
@@ -73,3 +74,12 @@ def get_substation(id, substation_list):
             return substation
     raise ValueError(f"substation {id} not found")
 
+def find_number_of_substations(data):
+    substation_type_id = 1
+    list_substations_type = data["substation_types"]
+    substation_type = get_substation(substation_type_id, list_substations_type)
+    
+    total_power_max = get_power_w(data)
+
+    return np.ceil(total_power_max / substation_type["rating"])
+    
