@@ -15,8 +15,11 @@ def turbines_sol(data, substation_list, turbine_cluster):
                                 )   
     return turbines_sol
 
-def substation_substation_cables_sol(data, substation_list, substation_cable_type = 1):
+def substation_substation_cables_sol(data, substation_list):
     substation_substation_cables = []
+    # sort sub_sub_cable_types_price by price
+    sub_sub_cable_types_price = sub_sub_cable_types_price.sort_values(by="price")
+    sub_sub_cable_types_id = int(sub_sub_cable_types_price.iloc[0]["id"])
 
     substation_list_with_coordinates = pd.DataFrame(substation_list)[["id"]].merge(pd.DataFrame().from_dict(data["substation_locations"]), left_on="id", right_on="id")
     while len(substation_list_with_coordinates) > 1:
@@ -25,7 +28,7 @@ def substation_substation_cables_sol(data, substation_list, substation_cable_typ
         distances["distance"] = distances.apply(lambda x: (x['x'] - distances.iloc[0]['x'])**2 + (x['y'] - distances.iloc[0]['y'])**2, axis=1)
         distances = distances.sort_values(by="distance")
 
-        substation_substation_cables.append(substation_substation_cable(int(id_sub), int(distances.iloc[1]["id"]), int(substation_cable_type)).to_dict())
+        substation_substation_cables.append(substation_substation_cable(int(id_sub), int(distances.iloc[1]["id"]), sub_sub_cable_types_id).to_dict())
         # delete first row of dataframe
         substation_list_with_coordinates = substation_list_with_coordinates.iloc[1:]
 
