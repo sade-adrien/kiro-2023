@@ -8,31 +8,54 @@ def turbines_sol(data, substation_list, turbine_cluster):
     turbines_sol = []
     for t in range(len(data['wind_turbines'])):
         turbines_sol.append(
-                            turbine(id=turbine_id[t],
-                                    substation_id=substation_list[turbine_cluster[t]]
+                            turbine(id=int(turbine_id[t]),
+                                    substation_id=int(substation_list[turbine_cluster[t]]["id"])
                                     ).to_dict()
 
                                 )   
     return turbines_sol
 
-def substation_substation_cables_sol(data):
-    return []
+def substation_substation_cables_sol(data, substation_list, substation_cable_type = 1):
+    substation_substation_cables = []
+
+    substation_list_with_coordinates = pd.DataFrame(substation_list)[["id"]].merge(pd.DataFrame().from_dict(data["substation_locations"]), left_on="id", right_on="id")
+    while len(substation_list_with_coordinates) > 1:
+        distances = substation_list_with_coordinates.copy()
+        id_sub = distances.iloc[0]["id"]
+        distances["distance"] = distances.apply(lambda x: (x['x'] - distances.iloc[0]['x'])**2 + (x['y'] - distances.iloc[0]['y'])**2, axis=1)
+        distances = distances.sort_values(by="distance")
+
+        substation_substation_cables.append(substation_substation_cable(int(id_sub), int(distances.iloc[1]["id"]), int(substation_cable_type)).to_dict())
+        # delete first row of dataframe
+        substation_list_with_coordinates = substation_list_with_coordinates.iloc[1:]
+
+        # delete row with id equal to distances.iloc[1]["id"]
+        substation_list_with_coordinates = substation_list_with_coordinates[substation_list_with_coordinates.id != distances.iloc[1]["id"]]
+
+    return substation_substation_cables
 
 def substations_sol(data, turbine_cluster):
     barycentres, turbine_cluster =  turbine_cluster
 
-    n_clusters = find_number_of_substations(data)
     possible_sub_sites = pd.DataFrame().from_dict(data["substation_locations"])[["x", "y"]].to_numpy()
     list_substations = []
+
+    list_substations = []
+    selected_substation_id = []
     for barycentre_number in range(len(barycentres)):
         dict_distances_sites_to_barycentre = {}
         for site_number in range(len(possible_sub_sites)):
             dict_distances_sites_to_barycentre[site_number + 1] = np.linalg.norm(barycentres[barycentre_number] - possible_sub_sites[site_number])
         
-
-        # get the key from the min value
-        key_min = min(dict_distances_sites_to_barycentre.keys(), key=(lambda k: dict_distances_sites_to_barycentre[k]))
+        # sort the dict_distances_sites_to_barycentre by value
         
+        list_distances = [(k,v) for k,v in dict_distances_sites_to_barycentre.items()]
+        list_distances.sort(key=lambda x: x[1])
+        while list_distances[0][0] in selected_substation_id:
+            list_distances.pop(0)
+        key_min = list_distances[0][0]
+        selected_substation_id.append(key_min)
+
         sub_type = get_substation_type(data)
         land_cable_type = get_cable_land_type(data, sub_type)
         
