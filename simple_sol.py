@@ -7,9 +7,6 @@ def turbines_sol(data):
                                     substation_id=1).to_dict())
     return turbines_sol
 
-def substation_substation_cables_sol():
-    return []
-
 def substation_substation_cables_sol(data):
     return []
 
